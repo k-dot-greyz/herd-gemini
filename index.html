@@ -3,8 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary Meta Tags -->
     <title>Herding Cats Consulting | Order from Chaos</title>
-    <meta name="description" content="Stop chasing tails. We optimize your scattered workflows into a single purring engine." />
+    <meta name="title" content="Herding Cats Consulting | Order from Chaos" />
+    <meta name="description" content="Stop chasing tails. We optimize your scattered workflows into a single purring engine. Expert consulting for chaotic organizations." />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://herdingcats.consulting/" />
+    <meta property="og:title" content="Herding Cats Consulting | Order from Chaos" />
+    <meta property="og:description" content="Stop chasing tails. We optimize your scattered workflows into a single purring engine. Expert consulting for chaotic organizations." />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1200" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://herdingcats.consulting/" />
+    <meta property="twitter:title" content="Herding Cats Consulting | Order from Chaos" />
+    <meta property="twitter:description" content="Stop chasing tails. We optimize your scattered workflows into a single purring engine. Expert consulting for chaotic organizations." />
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1200" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,6 +50,9 @@
             },
             backgroundImage: {
               'grid-pattern': "linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px)",
+            },
+            animation: {
+              'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             }
           }
         }
@@ -45,19 +66,23 @@
       }
       
       /* Subtle scanline effect for that terminal feel */
+      .scanlines {
+        position: relative;
+        overflow-x: hidden; 
+      }
       .scanlines::before {
         content: " ";
         display: block;
-        position: absolute;
+        position: fixed; /* Fixed to cover viewport during scroll */
         top: 0;
         left: 0;
         bottom: 0;
         right: 0;
         background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-        z-index: 2;
+        z-index: 50; /* Above background, below interactive elements if possible, but pointer-events: none handles clicks */
         background-size: 100% 2px, 3px 100%;
         pointer-events: none;
-        opacity: 0.3;
+        opacity: 0.15; /* Reduced opacity for better readability */
       }
     </style>
   <script type="importmap">
@@ -72,7 +97,7 @@
 }
 </script>
 </head>
-  <body class="bg-slate-950 text-slate-50 antialiased selection:bg-brand-500 selection:text-slate-950 overflow-x-hidden">
+  <body class="bg-slate-950 text-slate-50 antialiased selection:bg-brand-500 selection:text-slate-950 overflow-x-hidden scanlines">
     <div id="root"></div>
   </body>
 </html>

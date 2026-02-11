@@ -1,7 +1,8 @@
 import React from 'react';
 import { ScanSearch, Binary, Rocket } from 'lucide-react';
+import { IconComponent } from '../types';
 
-const Step = ({ number, title, desc, icon: Icon }: { number: string, title: string, desc: string, icon: any }) => (
+const Step = ({ number, title, desc, icon: Icon }: { number: string, title: string, desc: string, icon: IconComponent }) => (
   <div className="relative p-8 border-l border-slate-800 hover:border-brand-500 hover:bg-slate-900/30 transition-all group">
     <div className="flex items-center gap-4 mb-6">
       <span className="font-mono text-4xl font-bold text-slate-800 group-hover:text-brand-500/20 transition-colors select-none">

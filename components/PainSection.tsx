@@ -1,7 +1,8 @@
 import React from 'react';
 import { AlertTriangle, Workflow, Cpu } from 'lucide-react';
+import { IconComponent } from '../types';
 
-const PainPoint = ({ title, text, icon: Icon, delay }: { title: string, text: string, icon: any, delay: string }) => (
+const PainPoint = ({ title, text, icon: Icon, delay }: { title: string, text: string, icon: IconComponent, delay: string }) => (
   <div className={`flex flex-col gap-6 p-8 bg-slate-900 border border-slate-800 hover:border-brand-500 hover:bg-slate-900/50 transition-all duration-300 group relative overflow-hidden ${delay}`}>
     {/* Hover highlight */}
     <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
