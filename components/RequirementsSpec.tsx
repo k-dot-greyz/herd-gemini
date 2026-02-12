@@ -27,16 +27,18 @@ const CodeBlock = ({ children }: { children?: React.ReactNode }) => (
   </pre>
 );
 
-const PROJECT_STRUCTURE_MARKDOWN = `# Project Feline Focus - Architecture v2.0.1
+const PROJECT_STRUCTURE_MARKDOWN = `# Project Feline Focus - Architecture v2.1.0
 
 ## 📂 Core Structure
 - **App.tsx**: State container & client-side router
 - **index.tsx**: React DOM entry point
 - **types.ts**: Shared TypeScript definitions
+- **lib/storage.ts**: Mock persistence layer (LocalStorage adapter)
 
 ## 📄 Views
 - **components/LandingPage.tsx**: Composition of marketing sections
 - **components/RequirementsSpec.tsx**: This documentation file
+- **components/AdminConsole.tsx**: Authenticated audit log viewer (Restricted)
 
 ## 🧩 Components (Organisms)
 - **Navbar.tsx**: Top navigation with view switcher
@@ -46,6 +48,9 @@ const PROJECT_STRUCTURE_MARKDOWN = `# Project Feline Focus - Architecture v2.0.1
 - **SocialProof.tsx**: Trust signals / Logo strip
 - **ContactForm.tsx**: "Action" component with validation logic
 - **Footer.tsx**: Site termination & links
+
+## 🛠️ Utilities
+- **components/SeoHead.tsx**: Dynamic meta tag management
 
 ## ⚛️ UI System (Atoms & Molecules)
 - **components/Button.tsx**: Polymorphic button (Primary, Ghost, Outline)
@@ -61,7 +66,7 @@ export const RequirementsSpec: React.FC = () => {
         <div className="mb-12 border-b border-slate-800 pb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm border border-brand-500/30 bg-brand-500/10 text-brand-500 text-xs font-mono mb-6">
                 <Terminal size={12} />
-                <span>DOC_VERSION: 2.0.1</span>
+                <span>DOC_VERSION: 2.1.0</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-black text-white mb-4 uppercase tracking-tight">
                 System <span className="text-slate-700">Architecture</span> Spec
@@ -202,6 +207,7 @@ export const RequirementsSpec: React.FC = () => {
                             <ul className="space-y-2 text-sm font-mono text-slate-400">
                                 <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-slate-600 rounded-full"></span>LandingPage.tsx</li>
                                 <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-slate-600 rounded-full"></span>RequirementsSpec.tsx</li>
+                                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-brand-500 rounded-full"></span>AdminConsole.tsx <span className="text-[10px] bg-red-500/10 text-red-500 px-1 rounded ml-1 border border-red-500/20">NEW</span></li>
                             </ul>
                         </div>
 
@@ -221,16 +227,27 @@ export const RequirementsSpec: React.FC = () => {
                             </ul>
                         </div>
 
-                         <div className="bg-slate-900/30 border border-slate-800 p-5 rounded-sm md:col-span-2">
+                         <div className="bg-slate-900/30 border border-slate-800 p-5 rounded-sm">
                             <div className="flex items-center gap-2 mb-4 text-brand-500">
                                 <Layers size={16} />
                                 <h4 className="font-mono text-sm font-bold uppercase tracking-wider">UI Library (Atoms)</h4>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm font-mono text-slate-400">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-mono text-slate-400">
                                 <div className="flex items-center gap-2"><span className="text-slate-600">{'<'}</span>Button /<span className="text-slate-600">{'>'}</span></div>
                                 <div className="flex items-center gap-2"><span className="text-slate-600">{'<'}</span>SectionHeader /<span className="text-slate-600">{'>'}</span></div>
                                 <div className="flex items-center gap-2"><span className="text-slate-600">{'<'}</span>TerminalInput /<span className="text-slate-600">{'>'}</span></div>
                             </div>
+                        </div>
+
+                        <div className="bg-slate-900/30 border border-slate-800 p-5 rounded-sm">
+                            <div className="flex items-center gap-2 mb-4 text-brand-500">
+                                <Database size={16} />
+                                <h4 className="font-mono text-sm font-bold uppercase tracking-wider">Data / Logic</h4>
+                            </div>
+                            <ul className="space-y-2 text-sm font-mono text-slate-400">
+                                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-slate-600 rounded-full"></span>lib/storage.ts <span className="text-xs text-slate-600">// LocalDB</span></li>
+                                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-slate-600 rounded-full"></span>SeoHead.tsx <span className="text-xs text-slate-600">// Meta</span></li>
+                            </ul>
                         </div>
 
                     </div>

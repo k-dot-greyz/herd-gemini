@@ -4,20 +4,7 @@ import { Check, AlertTriangle, Terminal, Loader2, ArrowRight } from 'lucide-reac
 import { Button } from './Button';
 import { ContactFormData } from '../types';
 import { TerminalInput } from './ui/TerminalInput';
-
-/**
- * MOCK SERVER ACTION
- */
-async function submitAuditRequest(data: ContactFormData): Promise<{ success: boolean; message: string }> {
-  await new Promise(resolve => setTimeout(resolve, 800));
-  
-  if (data.email.includes('error')) {
-    throw new Error('Simulated Server Error: Connection Refused');
-  }
-
-  console.log('[SERVER] POST /api/audit-request', data);
-  return { success: true, message: 'Packet received. Sequence initiated.' };
-}
+import { StorageAPI } from '../lib/storage';
 
 export const ContactForm: React.FC = () => {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -32,9 +19,13 @@ export const ContactForm: React.FC = () => {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      await submitAuditRequest(data);
+      // Simulate backend call via mock storage
+      await StorageAPI.saveLog(data);
+      
       setSubmitStatus('success');
       reset();
+      
+      // Auto-reset status after 5 seconds to allow another submission
       setTimeout(() => setSubmitStatus('idle'), 5000);
     } catch (error) {
       console.error('Submission failed', error);
@@ -98,6 +89,9 @@ export const ContactForm: React.FC = () => {
                     </div>
                     <h3 className="text-xl font-bold text-white mb-2 font-mono uppercase">Transmission Complete</h3>
                     <p className="text-slate-500 font-mono text-sm">We are analyzing your packet data.</p>
+                    <div className="mt-4 text-[10px] text-slate-600 font-mono">
+                        LOG_ID: {crypto.randomUUID().slice(0,8)}
+                    </div>
                     <Button 
                       variant="ghost" 
                       className="mt-8 font-mono text-xs"

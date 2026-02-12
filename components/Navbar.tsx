@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Terminal, FileText, Home } from 'lucide-react';
+import { Menu, X, Terminal, FileText, Home, Shield } from 'lucide-react';
 import { Button } from './Button';
 import { NavItem } from '../types';
 
@@ -10,8 +10,8 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 interface NavbarProps {
-  currentView: 'home' | 'specs';
-  onNavigate: (view: 'home' | 'specs') => void;
+  currentView: 'home' | 'specs' | 'admin';
+  onNavigate: (view: 'home' | 'specs' | 'admin') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
@@ -59,11 +59,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
           >
-            <div className="flex items-center justify-center w-10 h-10 bg-slate-900 border border-slate-700 text-brand-500 rounded-sm group-hover:border-brand-500 group-hover:shadow-[0_0_10px_rgba(245,158,11,0.3)] transition-all">
-              <Terminal size={20} strokeWidth={2.5} />
+            <div className={`flex items-center justify-center w-10 h-10 bg-slate-900 border text-brand-500 rounded-sm transition-all ${
+                currentView === 'admin' 
+                ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)] text-red-500' 
+                : 'border-slate-700 group-hover:border-brand-500 group-hover:shadow-[0_0_10px_rgba(245,158,11,0.3)]'
+            }`}>
+              {currentView === 'admin' ? <Shield size={20} strokeWidth={2.5} /> : <Terminal size={20} strokeWidth={2.5} />}
             </div>
             <span className="text-xl font-bold tracking-tight text-white font-mono">
-              HCC<span className="text-brand-500 animate-pulse">_</span>
+              HCC<span className={`animate-pulse ${currentView === 'admin' ? 'text-red-500' : 'text-brand-500'}`}>_</span>
             </span>
           </div>
 
@@ -105,8 +109,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                 INIT_AUDIT
                 </Button>
             ) : (
-                <div className="text-xs font-mono text-slate-500">
-                    READ_ONLY_MODE
+                <div className={`text-xs font-mono ${currentView === 'admin' ? 'text-red-500' : 'text-slate-500'}`}>
+                    {currentView === 'admin' ? 'RESTRICTED_ACCESS' : 'READ_ONLY_MODE'}
                 </div>
             )}
           </div>
