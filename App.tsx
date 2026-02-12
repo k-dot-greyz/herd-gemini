@@ -1,22 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { PainSection } from './components/PainSection';
-import { SocialProof } from './components/SocialProof';
-import { SolutionSection } from './components/SolutionSection';
-import { ContactForm } from './components/ContactForm';
+import { LandingPage } from './components/LandingPage';
+import { RequirementsSpec } from './components/RequirementsSpec';
 import { Footer } from './components/Footer';
 
 function App() {
+  const [currentView, setCurrentView] = useState<'home' | 'specs'>('home');
+
+  const handleNavigate = (view: 'home' | 'specs') => {
+    setCurrentView(view);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen flex flex-col font-sans">
-      <Navbar />
+      <Navbar currentView={currentView} onNavigate={handleNavigate} />
       <main className="flex-grow">
-        <Hero />
-        <SocialProof />
-        <PainSection />
-        <SolutionSection />
-        <ContactForm />
+        {currentView === 'home' ? (
+          <LandingPage />
+        ) : (
+          <RequirementsSpec />
+        )}
       </main>
       <Footer />
     </div>

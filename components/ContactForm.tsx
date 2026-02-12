@@ -1,83 +1,23 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Check, AlertTriangle, Terminal, Loader2, ArrowRight, XCircle } from 'lucide-react';
+import { Check, AlertTriangle, Terminal, Loader2, ArrowRight } from 'lucide-react';
 import { Button } from './Button';
 import { ContactFormData } from '../types';
+import { TerminalInput } from './ui/TerminalInput';
 
 /**
  * MOCK SERVER ACTION
- * In a real Next.js/Remix app, this would be a separate file e.g., 'actions.ts'
- * This simulates the backend latency and response structure.
  */
 async function submitAuditRequest(data: ContactFormData): Promise<{ success: boolean; message: string }> {
-  // Simulate network delay for "Drag Race" feel - tight 800ms for responsiveness
   await new Promise(resolve => setTimeout(resolve, 800));
   
-  // Basic validation simulation
   if (data.email.includes('error')) {
     throw new Error('Simulated Server Error: Connection Refused');
   }
 
-  // Success response
   console.log('[SERVER] POST /api/audit-request', data);
   return { success: true, message: 'Packet received. Sequence initiated.' };
 }
-
-// Reusable Input Wrapper to ensure consistency
-// Defined outside to prevent re-creation on every render and fix type inference issues
-interface InputWrapperProps {
-  label: string;
-  error?: any;
-  isDirty?: boolean;
-  isTouched?: boolean;
-  children: React.ReactNode;
-}
-
-const InputWrapper: React.FC<InputWrapperProps> = ({ 
-  label, 
-  error, 
-  isDirty, 
-  isTouched,
-  children 
-}) => (
-  <div className="space-y-2">
-    <div className="flex justify-between items-end">
-      <label className="text-xs font-mono font-bold text-slate-500 uppercase tracking-widest ml-1">
-        {label}
-      </label>
-      {error && (
-          <span className="text-red-500 text-[10px] font-mono uppercase flex items-center gap-1 animate-in slide-in-from-right-2">
-              //! {error.message}
-          </span>
-      )}
-    </div>
-    <div className={`
-      group flex items-start bg-slate-950 border-b-2 transition-all duration-200 relative overflow-hidden
-      ${error 
-          ? 'border-red-500/50 bg-red-500/5' 
-          : 'border-slate-800 focus-within:border-brand-500 focus-within:bg-brand-500/5 hover:border-slate-700'}
-    `}>
-      {/* Status Bar on left */}
-      <div className={`absolute left-0 top-0 bottom-0 w-0.5 transition-colors ${
-          error ? 'bg-red-500' : (isDirty ? 'bg-brand-500' : 'bg-transparent')
-      }`} />
-
-      <span className={`pl-4 pr-3 py-3 font-mono text-sm select-none transition-colors ${
-          error ? 'text-red-500' : 'text-slate-600 group-focus-within:text-brand-500'
-      }`}>
-          {'>'}
-      </span>
-      
-      {children}
-
-      <div className="pr-4 py-3 flex items-center h-full">
-          {error && <XCircle size={16} className="text-red-500 animate-in zoom-in duration-200" />}
-          {/* Only show success checkmark if touched (validated) and dirty (modified) and no error */}
-          {!error && isDirty && isTouched && <Check size={16} className="text-brand-500 animate-in zoom-in duration-200" />}
-      </div>
-    </div>
-  </div>
-);
 
 export const ContactForm: React.FC = () => {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -87,7 +27,7 @@ export const ContactForm: React.FC = () => {
     formState: { errors, isSubmitting, dirtyFields, touchedFields },
     reset 
   } = useForm<ContactFormData>({
-    mode: 'onBlur' // Validation triggered on blur to avoid "yelling" while typing
+    mode: 'onBlur'
   });
 
   const onSubmit = async (data: ContactFormData) => {
@@ -95,8 +35,6 @@ export const ContactForm: React.FC = () => {
       await submitAuditRequest(data);
       setSubmitStatus('success');
       reset();
-      
-      // Auto-reset UI after 5 seconds
       setTimeout(() => setSubmitStatus('idle'), 5000);
     } catch (error) {
       console.error('Submission failed', error);
@@ -171,7 +109,7 @@ export const ContactForm: React.FC = () => {
                 ) : (
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     
-                    <InputWrapper 
+                    <TerminalInput 
                         label="Input.Identity" 
                         error={errors.name} 
                         isDirty={!!dirtyFields.name}
@@ -182,13 +120,13 @@ export const ContactForm: React.FC = () => {
                             type="text"
                             aria-invalid={errors.name ? "true" : "false"}
                             {...register("name", { required: "Identity required" })}
-                            className="w-full bg-transparent border-none text-white px-0 py-3 focus:ring-0 focus:outline-none font-mono text-sm placeholder:text-slate-800"
+                            className="w-full bg-transparent border-none text-white px-0 py-3 focus:ring-0 focus:outline-none font-mono text-base md:text-sm placeholder:text-slate-800"
                             placeholder="enter_name"
                             autoComplete="name"
                         />
-                    </InputWrapper>
+                    </TerminalInput>
 
-                    <InputWrapper 
+                    <TerminalInput 
                         label="Input.Comms" 
                         error={errors.email} 
                         isDirty={!!dirtyFields.email}
@@ -205,13 +143,13 @@ export const ContactForm: React.FC = () => {
                                 message: "Invalid syntax"
                                 }
                             })}
-                            className="w-full bg-transparent border-none text-white px-0 py-3 focus:ring-0 focus:outline-none font-mono text-sm placeholder:text-slate-800"
+                            className="w-full bg-transparent border-none text-white px-0 py-3 focus:ring-0 focus:outline-none font-mono text-base md:text-sm placeholder:text-slate-800"
                             placeholder="user@domain.sys"
                             autoComplete="email"
                         />
-                    </InputWrapper>
+                    </TerminalInput>
 
-                    <InputWrapper 
+                    <TerminalInput 
                         label="Input.Log_Data" 
                         error={errors.chaosDescription} 
                         isDirty={!!dirtyFields.chaosDescription}
@@ -222,10 +160,10 @@ export const ContactForm: React.FC = () => {
                             rows={3}
                             aria-invalid={errors.chaosDescription ? "true" : "false"}
                             {...register("chaosDescription", { required: "System logs required" })}
-                            className="w-full bg-transparent border-none text-white px-0 py-3 focus:ring-0 focus:outline-none font-mono text-sm placeholder:text-slate-800 resize-none"
+                            className="w-full bg-transparent border-none text-white px-0 py-3 focus:ring-0 focus:outline-none font-mono text-base md:text-sm placeholder:text-slate-800 resize-none"
                             placeholder="// Describe system failure..."
                         />
-                    </InputWrapper>
+                    </TerminalInput>
 
                     <div className="pt-4">
                       <Button 

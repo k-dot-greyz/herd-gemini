@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Terminal } from 'lucide-react';
+import { Menu, X, Terminal, FileText, Home } from 'lucide-react';
 import { Button } from './Button';
 import { NavItem } from '../types';
 
@@ -9,7 +9,12 @@ const NAV_ITEMS: NavItem[] = [
   { label: '_data', href: '#testimonials' },
 ];
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  currentView: 'home' | 'specs';
+  onNavigate: (view: 'home' | 'specs') => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -23,11 +28,18 @@ export const Navbar: React.FC = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  const scrollToSection = (href: string) => {
+  const handleNavClick = (href: string) => {
     setIsOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (currentView !== 'home') {
+      onNavigate('home');
+      // Allow time for render before scrolling
+      setTimeout(() => {
+        const element = document.querySelector(href);
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const element = document.querySelector(href);
+      if (element) element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -40,7 +52,13 @@ export const Navbar: React.FC = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <div 
+            className="flex items-center gap-3 cursor-pointer group" 
+            onClick={() => {
+                onNavigate('home');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          >
             <div className="flex items-center justify-center w-10 h-10 bg-slate-900 border border-slate-700 text-brand-500 rounded-sm group-hover:border-brand-500 group-hover:shadow-[0_0_10px_rgba(245,158,11,0.3)] transition-all">
               <Terminal size={20} strokeWidth={2.5} />
             </div>
@@ -51,26 +69,46 @@ export const Navbar: React.FC = () => {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
+            {/* Standard Nav Items - Only show if on home or if we want them to redirect to home */}
             {NAV_ITEMS.map((item) => (
-              <a
+              <button
                 key={item.label}
-                href={item.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection(item.href);
-                }}
-                className="text-xs font-mono font-medium text-slate-400 hover:text-brand-500 transition-colors uppercase tracking-wider"
+                onClick={() => handleNavClick(item.href)}
+                className={`text-xs font-mono font-medium transition-colors uppercase tracking-wider ${
+                    currentView === 'home' ? 'text-slate-400 hover:text-brand-500' : 'text-slate-600 hover:text-slate-400'
+                }`}
               >
                 {item.label}
-              </a>
+              </button>
             ))}
+            
+            {/* View Switcher Link */}
+            <div className="h-4 w-px bg-slate-800 mx-2" />
+            
+            <button
+                onClick={() => onNavigate(currentView === 'home' ? 'specs' : 'home')}
+                className={`flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider transition-colors px-3 py-1.5 rounded-sm border ${
+                    currentView === 'specs' 
+                    ? 'text-brand-500 bg-brand-500/10 border-brand-500/30' 
+                    : 'text-slate-400 border-transparent hover:bg-slate-800'
+                }`}
+            >
+                {currentView === 'home' ? <FileText size={14} /> : <Home size={14} />}
+                {currentView === 'home' ? '_SYS_SPECS' : '_RETURN_HOME'}
+            </button>
           </nav>
 
           {/* Desktop CTA */}
           <div className="hidden md:block">
-            <Button size="sm" onClick={() => scrollToSection('#contact')}>
-              INIT_AUDIT
-            </Button>
+            {currentView === 'home' ? (
+                <Button size="sm" onClick={() => handleNavClick('#contact')}>
+                INIT_AUDIT
+                </Button>
+            ) : (
+                <div className="text-xs font-mono text-slate-500">
+                    READ_ONLY_MODE
+                </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -88,21 +126,30 @@ export const Navbar: React.FC = () => {
       {isOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-slate-950 border-b border-slate-800 shadow-2xl p-4 flex flex-col gap-4 animate-in slide-in-from-top-2 duration-200">
           {NAV_ITEMS.map((item) => (
-            <a
+            <button
               key={item.label}
-              href={item.href}
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection(item.href);
-              }}
-              className="text-sm font-mono font-medium text-slate-300 hover:text-brand-500 py-2 border-b border-slate-900 last:border-0 uppercase"
+              onClick={() => handleNavClick(item.href)}
+              className="text-left text-sm font-mono font-medium text-slate-300 hover:text-brand-500 py-2 border-b border-slate-900 last:border-0 uppercase"
             >
               {item.label}
-            </a>
+            </button>
           ))}
-          <Button fullWidth onClick={() => scrollToSection('#contact')}>
-            INIT_AUDIT
-          </Button>
+          
+          <button
+             onClick={() => {
+                 setIsOpen(false);
+                 onNavigate(currentView === 'home' ? 'specs' : 'home');
+             }}
+             className="text-left text-sm font-mono font-bold text-brand-500 py-2 border-b border-slate-900 uppercase flex items-center gap-2"
+          >
+              {currentView === 'home' ? <><FileText size={16} /> _VIEW_SPECS</> : <><Home size={16} /> _RETURN_HOME</>}
+          </button>
+
+          {currentView === 'home' && (
+            <Button fullWidth onClick={() => handleNavClick('#contact')}>
+                INIT_AUDIT
+            </Button>
+          )}
         </div>
       )}
     </header>
